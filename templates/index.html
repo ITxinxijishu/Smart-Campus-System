@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}随机点名{% endblock %}
+{% block page_title %}随机点名系统{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">选择班级：</label>
+                        <select class="form-select form-select-lg" name="class_num" required>
+                            <option value="">请选择班级</option>
+                            {% for class in classes %}
+                            <option value="{{ class }}" 
+                                    {% if selected_class == class %}selected{% endif %}>
+                                {{ class }}班
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-play me-2"></i>开始随机点名
+                    </button>
+                </form>
+
+                {% if selected_student %}
+                <div class="mt-5 text-center">
+                    <div class="card bg-light">
+                        <div class="card-body py-4">
+                            <h5 class="text-muted mb-3">抽中学生：</h5>
+                            <div id="result" class="display-4 fw-bold text-primary highlight">
+                                {{ selected_student }}
+                            </div>
+                            {% if selected_class %}
+                            <div class="mt-2 text-muted">
+                                {{ selected_class }}班
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

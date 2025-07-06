@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}学生控制台{% endblock %}
+{% block page_title %}学生控制台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 今日课程 -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">今日课程</h5>
+            </div>
+            <div class="card-body">
+                {% if today_courses %}
+                <ul class="list-group">
+                    {% for course in today_courses %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>第{{ course.period }}节</strong>: {{ course.subject }}
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ course.teacher }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="alert alert-info mb-0">今日没有课程安排</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 待提交作业 -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">待提交作业</h5>
+                <a href="{% url 'student_homework_list' %}" class="btn btn-sm btn-outline-primary">
+                    查看所有作业
+                </a>
+            </div>
+            <div class="card-body">
+                {% if pending_homeworks %}
+                <ul class="list-group">
+                    {% for hw in pending_homeworks %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ hw.subject }}</strong>: {{ hw.title }}
+                            <div class="text-muted small">截止日期: {{ hw.due_date }}</div>
+                        </div>
+                        <a href="{% url 'student_homework_submit' hw.id %}" 
+                           class="btn btn-sm btn-warning">
+                            去提交
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="alert alert-success mb-0">没有待提交的作业</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

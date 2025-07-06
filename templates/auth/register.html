@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}用户注册{% endblock %}
+{% block page_title %}用户注册 - {{ role_display }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .role-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .form-card {
+        border-left: 4px solid;
+        position: relative;
+        overflow: visible;
+    }
+    
+    .student-card {
+        border-left-color: #4e73df;
+    }
+    
+    .teacher-card {
+        border-left-color: #1cc88a;
+    }
+    
+    .education-card {
+        border-left-color: #f6c23e;
+    }
+    
+    .role-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .student-icon {
+        color: #4e73df;
+    }
+    
+    .teacher-icon {
+        color: #1cc88a;
+    }
+    
+    .education-icon {
+        color: #f6c23e;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card form-card 
+            {% if role == 'student' %}student-card
+            {% elif role == 'teacher' %}teacher-card
+            {% else %}education-card{% endif %}">
+            <div class="role-badge">
+                {% if role == 'student' %}
+                    <i class="fas fa-user-graduate"></i>
+                {% elif role == 'teacher' %}
+                    <i class="fas fa-chalkboard-teacher"></i>
+                {% else %}
+                    <i class="fas fa-user-shield"></i>
+                {% endif %}
+            </div>
+            
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="role-icon 
+                        {% if role == 'student' %}student-icon
+                        {% elif role == 'teacher' %}teacher-icon
+                        {% else %}education-icon{% endif %}">
+                        {% if role == 'student' %}
+                            <i class="fas fa-user-graduate"></i>
+                        {% elif role == 'teacher' %}
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        {% else %}
+                            <i class="fas fa-user-shield"></i>
+                        {% endif %}
+                    </div>
+                    <h4>{{ role_display }}注册</h4>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="username" 
+                                       name="username" placeholder="用户名" required>
+                                <label for="username">用户名</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="real_name" 
+                                       name="real_name" placeholder="真实姓名" required>
+                                <label for="real_name">真实姓名</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="password" 
+                                       name="password" placeholder="密码" required>
+                                <label for="password">密码</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="password2" 
+                                       name="password2" placeholder="确认密码" required>
+                                <label for="password2">确认密码</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if role == 'student' %}
+                    <div class="mb-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="shibiema" 
+                                   name="shibiema" placeholder="班级识别码" required>
+                            <label for="shibiema">班级识别码</label>
+                        </div>
+                        <div class="form-text mt-1">
+                            请向老师或教育管理员获取班级识别码
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="mb-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="shibiema" 
+                                   name="shibiema" placeholder="学校识别码" required>
+                            <label for="shibiema">学校识别码</label>
+                        </div>
+                        <div class="form-text mt-1">
+                            请向教育管理员获取学校识别码
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-lg btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>注册账号
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p class="mb-0">已有账号？<a href="{% url 'login' %}">立即登录</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 根据角色设置页面标题
+    const roleMap = {
+        'student': '学生',
+        'teacher': '教师',
+        'education': '教育管理员'
+    };
+    
+    const role = "{{ role }}";
+    document.querySelector('.page-title').textContent = 
+        `用户注册 - ${roleMap[role] || '用户'}`;
+    
+    // 密码匹配验证
+    const password = document.getElementById('password');
+    const password2 = document.getElementById('password2');
+    
+    function validatePassword() {
+        if (password.value !== password2.value) {
+            password2.setCustomValidity('两次输入的密码不一致');
+        } else {
+            password2.setCustomValidity('');
+        }
+    }
+    
+    password.addEventListener('change', validatePassword);
+    password2.addEventListener('keyup', validatePassword);
+});
+</script>
+{% endblock %}

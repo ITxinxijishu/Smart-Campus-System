@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}识别码管理{% endblock %}
+{% block page_title %}学校与班级识别码管理{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 添加学校 -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">添加新学校</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_school" value="1">
+                    <div class="mb-3">
+                        <label class="form-label">学校名称</label>
+                        <input type="text" name="school_name" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-plus me-1"></i>添加学校
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加班级 -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">添加新班级</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_class" value="1">
+                    <div class="mb-3">
+                        <label class="form-label">选择学校</label>
+                        <select name="school_id" class="form-select" required>
+                            {% for school in schools.values %}
+                            <option value="{{ school.id }}">{{ school.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">班级名称</label>
+                        <input type="text" name="class_name" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-plus me-1"></i>添加班级
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 学校与班级列表 -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">学校与班级列表</h5>
+    </div>
+    <div class="card-body">
+        {% for school in schools.values %}
+        <div class="mb-4">
+            <h5 class="d-flex align-items-center">
+                <i class="fas fa-school me-2 text-primary"></i>
+                {{ school.name }}
+                <span class="badge bg-primary ms-2">ID: {{ school.id }}</span>
+            </h5>
+            
+            <div class="row">
+                {% for class in school.classes %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card border">
+                        <div class="card-body">
+                            <h6 class="card-title d-flex align-items-center">
+                                <i class="fas fa-chalkboard me-2 text-secondary"></i>
+                                {{ class.class_name }}
+                            </h6>
+                            <div class="mb-2">
+                                <span class="badge bg-secondary">班级ID: {{ class.class_id }}</span>
+                            </div>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" value="{{ class.shibiema }}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" 
+                                        onclick="copyToClipboard(this, '{{ class.shibiema }}')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <form method="post" class="d-inline">
+                                <input type="hidden" name="delete_class" value="{{ class.shibiema }}">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('确定删除此班级吗？')">
+                                    <i class="fas fa-trash-alt me-1"></i>删除
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function copyToClipboard(button, text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const original = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+            button.innerHTML = original;
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

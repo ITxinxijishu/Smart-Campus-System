@@ -1,0 +1,63 @@
+<!-- templates/auth/role_select.html -->
+{% extends "base.html" %}
+
+{% block title %}选择角色{% endblock %}
+{% block page_title %}请选择您的角色{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="text-center mb-4">请选择您的注册角色</h4>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">学生</h5>
+                                <p class="card-text">注册学生账户</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="role" value="student">
+                                    <button type="submit" class="btn btn-outline-primary w-100">选择</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="fas fa-chalkboard-teacher fa-3x text-success mb-3"></i>
+                                <h5 class="card-title">教师</h5>
+                                <p class="card-text">注册教师账户</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="role" value="teacher">
+                                    <button type="submit" class="btn btn-outline-success w-100">选择</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="fas fa-user-shield fa-3x text-warning mb-3"></i>
+                                <h5 class="card-title">教育管理员</h5>
+                                <p class="card-text">注册管理员账户</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="role" value="education">
+                                    <button type="submit" class="btn btn-outline-warning w-100">选择</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+<h1>{% if object %}编辑题目{% else %}添加题目{% endif %}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">保存</button>
+</form>

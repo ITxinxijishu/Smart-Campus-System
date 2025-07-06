@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}课程表管理{% endblock %}
+{% block page_title %}课程表管理 - {{ user.class_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>当前课程表</h5>
+            </div>
+            <div class="card-body">
+                {% if timetable %}
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>星期</th>
+                                <th>节次</th>
+                                <th>科目</th>
+                                <th>教师</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in timetable %}
+                            <tr>
+                                <td>{{ course.get_day_display }}</td>
+                                <td>第{{ course.period }}节</td>
+                                <td>{{ course.subject }}</td>
+                                <td>{{ course.teacher }}</td>
+                                <td>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_index" value="{{ course.index }}">
+                                        <button type="submit" name="delete_course" 
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('确定删除此课程吗？')">
+                                            删除
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">暂无课程安排</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>添加新课程</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">星期</label>
+                        <select name="day" class="form-select" required>
+                            <option value="mon">星期一</option>
+                            <option value="tue">星期二</option>
+                            <option value="wed">星期三</option>
+                            <option value="thu">星期四</option>
+                            <option value="fri">星期五</option>
+                            <option value="sat">星期六</option>
+                            <option value="sun">星期日</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">节次</label>
+                        <input type="number" name="period" class="form-control" min="1" max="10" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">科目</label>
+                        <input type="text" name="subject" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">教师</label>
+                        <input type="text" name="teacher" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">添加课程</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

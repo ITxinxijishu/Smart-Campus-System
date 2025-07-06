@@ -1,0 +1,14 @@
+<h1>题目列表</h1>
+<a href="{% url 'question_add' %}" class="btn btn-primary mb-3">添加题目</a>
+<ul>
+    {% for question in object_list %}
+    <li>
+        <strong>{{ question.question_text }}</strong>
+        <small>({{ question.answer|truncatewords:10 }})</small>
+        <div>
+            <a href="{% url 'question_edit' question.id %}">编辑</a> |
+            <a href="{% url 'question_delete' question.id %}">删除</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

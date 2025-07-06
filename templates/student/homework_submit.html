@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}作业提交{% endblock %}
+{% block page_title %}{{ homework.title }} - 作业提交{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>{{ homework.title }}</h5>
+        <div class="text-muted">
+            <span class="me-3">科目: {{ homework.subject }}</span>
+            <span>截止日期: {{ homework.due_date|date:"Y-m-d H:i" }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <h6>作业要求:</h6>
+            <div class="border p-3 bg-light rounded">
+                {{ homework.content|linebreaks }}
+            </div>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">作业内容</label>
+                <textarea name="content" class="form-control" rows="10" required>
+                    {% if submission %}{{ submission.content }}{% endif %}
+                </textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">提交作业</button>
+        </form>
+        
+        {% if submission %}
+        <div class="mt-4">
+            <h6>提交记录:</h6>
+            <div class="border p-3 rounded">
+                <div class="d-flex justify-content-between">
+                    <span>提交状态: 
+                        <span class="badge 
+                            {% if submission.status == 'submitted' %}bg-success
+                            {% elif submission.status == 'late' %}bg-warning
+                            {% else %}bg-secondary{% endif %}">
+                            {{ submission.get_status_display }}
+                        </span>
+                    </span>
+                    <span>提交时间: {{ submission.submitted_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                {% if submission.grade %}
+                <div class="mt-2">
+                    <span>评分: <strong>{{ submission.grade }}</strong></span>
+                    {% if submission.feedback %}
+                    <div class="mt-2">
+                        <p class="mb-1">教师反馈:</p>
+                        <div class="border p-2 bg-light rounded">
+                            {{ submission.feedback|linebreaks }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
